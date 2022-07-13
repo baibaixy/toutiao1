@@ -1,9 +1,6 @@
 <template>
   <div>
-    <h1>黑马头条</h1>
-    <span class="toutiao toutiao-dianzan"></span>
-    <van-button class="l" type="primary">主要按钮</van-button>
-    <van-button type="info">信息按钮</van-button>
+    <router-view></router-view>
   </div>
 </template>
 <script>
@@ -20,6 +17,7 @@ export default {
   data () {
     return {}
   },
+
   mounted () {},
   computed: {},
   methods: {}
