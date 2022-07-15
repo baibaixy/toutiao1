@@ -6,12 +6,13 @@
       </template>
     </van-nav-bar>
 
-    <van-form @submit="login" class="form">
+    <van-form ref="form" @submit="login" class="form">
       <van-field
         v-model="mobile"
         name="mobile"
         placeholder="请输入手机号"
-        :rules="[{ required: true, message: '请输入手机号' }]"
+        :rules="PhoneRule"
+        maxlength="11"
       >
         <template #label>
           <span class="toutiao toutiao-shouji"></span>
@@ -21,13 +22,27 @@
         v-model="code"
         name="code"
         placeholder="请输入验证码"
-        :rules="[{ required: true, message: '请输入验证码' }]"
+        :rules="CodeRule"
       >
         <template #label>
           <span class="toutiao toutiao-yanzhengma"></span>
         </template>
         <template #right-icon>
-          <van-button class="code-btn" size="mini" round>发送验证码</van-button>
+          <van-count-down
+            v-if="isShowCountDown"
+            format="ss s"
+            :time="60 * 1000"
+            @finish="isShowCountDown = false"
+          />
+          <van-button
+            v-else
+            class="code-btn"
+            size="mini"
+            round
+            @click="sendCode"
+            native-type="button"
+            >发送验证码</van-button
+          >
         </template>
       </van-field>
       <div style="margin: 16px">
@@ -39,12 +54,16 @@
   </div>
 </template>
 <script>
-import { login } from '@/api/user'
+import { login, SendCode } from '@/api/user'
+import { PhoneRule, CodeRule } from './rule'
 export default {
   data () {
     return {
       mobile: '',
-      code: ''
+      code: '',
+      PhoneRule,
+      CodeRule,
+      isShowCountDown: false
     }
   },
   mounted () {},
@@ -53,9 +72,60 @@ export default {
     onClickLeft () {
       this.$router.back()
     },
+    // /1.await 1修饰什么？Promise
+    // /2,res拿到的是什么？
+    // Promise resolve的结果
+    // 服务器返回真正的数据在res.data
+    // 服务器返回的状态码res.status
+    // 3.error,是什么
+    // axios封装的Promise里reject的结果
+    // error.response.status拿到服务器返回的状态码
+    // -error.response.data服务器返回的真正的数据
     async login () {
-      const res = await login(this.mobile, this.code)
-      console.log(res)
+      this.$toast.loading({
+        message: '加载中...',
+        forbidClick: true
+      })
+      try {
+        const res = await login(this.mobile, this.code)
+        this.$store.commit('SetUser', res.data.data)
+        this.$router.push('/profile')
+        this.$toast.success('登录成功')
+      } catch (error) {
+        const status = error.response.status
+        let message = '登录错误,请刷新~'
+        if (status === 400) {
+          message = error.response.data.message
+        }
+        this.$toast.fail(message)
+        // switch (status) {
+        //   case 400:
+        //     this.$toast.fail(error.response.data.message)
+        //     break
+        //   case 500:
+        //     this.$toast.fail('登录错误,请刷新~')
+        //     break
+        //   default:
+        //     this.$toast.fail('登录错误,请刷新~')
+        //     break
+        // }
+      }
+    },
+    async sendCode () {
+      try {
+        await this.$refs.form.validate('mobile')
+        await SendCode(this.mobile)
+        this.isShowCountDown = true
+      } catch (error) {
+        if (!error.response) {
+          this.$toast.fail('手机号格式不正确')
+        } else {
+          const status = error.response.status
+          if (status === 404 || status === 429) {
+            this.$toast.fail(error.response.data.message)
+          }
+        }
+      }
     }
   }
 }
