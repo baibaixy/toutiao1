@@ -92,6 +92,8 @@ export default {
         this.$router.push('/profile')
         this.$toast.success('登录成功')
       } catch (error) {
+        console.log(error)
+        console.log(error.response)
         const status = error.response.status
         let message = '登录错误,请刷新~'
         if (status === 400) {
