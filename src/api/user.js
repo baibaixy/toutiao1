@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import store from '@/store'
+
 /**
  *
  * @param {string} mobile //手机号

@@ -88,6 +88,7 @@ export default {
       })
       try {
         const res = await login(this.mobile, this.code)
+        console.log(res)
         this.$store.commit('SetUser', res.data.data)
         this.$router.push('/profile')
         this.$toast.success('登录成功')
