@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="listDetailFn(articleInfo.art_id)">
     <van-cell
       v-if="articleInfo.cover.type === 0"
       :title="articleInfo.title"
@@ -52,7 +52,11 @@ export default {
       return `${res.aut_name} ${res.comm_count}评论 ${time}`
     }
   },
-  methods: {}
+  methods: {
+    listDetailFn (id) {
+      this.$router.push(`/detail/${id}`)
+    }
+  }
 }
 </script>
 <style scoped></style>

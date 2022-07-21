@@ -2,7 +2,10 @@
   <div>
     <van-nav-bar class="navbar">
       <template #title>
-        <van-button round> <van-icon name="search" />搜索</van-button>
+        <van-button round @click='$router.push("/search")'>
+          <van-icon name="search"
+          />搜索</van-button
+        >
       </template>
     </van-nav-bar>
     <van-tabs v-model="active" swipeable>
@@ -36,12 +39,12 @@ export default {
     async getMyChannels () {
       try {
         if (!this.isLogin) {
-          console.log(111)
+          // console.log(111)
           const myChannel = getMyChannelsBylocal()
           if (myChannel) {
             this.myChannels = myChannel
           } else {
-            console.log(1111111111)
+            // console.log(1111111111)
 
             const { data } = await getMyChannels()
             this.myChannels = data.data.channels
