@@ -55,6 +55,12 @@ export default {
   methods: {
     listDetailFn (id) {
       this.$router.push(`/detail/${id}`)
+      // this.$router.push({
+      //   path: '/detail',
+      //   query: {
+      //     id
+      //   }
+      // })
     }
   }
 }

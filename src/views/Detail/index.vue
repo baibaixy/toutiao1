@@ -4,6 +4,7 @@
     <detailContent
       :countList="countList"
       :isfollowed="isfollowed"
+      @changeIsfollowed="changeIsfollowed"
     ></detailContent>
     <countAll :id="id" ref="sonomment"></countAll>
     <div class="detail_bottom">
@@ -16,7 +17,7 @@
         <van-icon name="star" v-else class="red" />
       </div>
       <div @click="setLike">
-        <van-icon name="good-job-o" v-if="!isLike" />
+        <van-icon name="good-job-o" v-if="isLike === 1" />
         <van-icon name="good-job" v-else class="red" />
       </div>
       <van-icon name="share" />
@@ -52,6 +53,7 @@ import {
 import detailContent from './component/detailContent.vue'
 import countAll from './component/countAll.vue'
 export default {
+  name: 'datail',
   data () {
     return {
       commentNum: 0,
@@ -59,7 +61,7 @@ export default {
       message: '',
       id: '',
       isCollect: false,
-      isLike: false,
+      isLike: 0,
       countList: {},
       isfollowed: false,
       countResults: {},
@@ -87,22 +89,25 @@ export default {
       if (this.isLike) {
         await delLike(this.id)
         this.likeCount--
+        this.isLike = 0
       } else {
         await setLike(this.id)
         this.likeCount++
+        this.isLike = 1
       }
-      this.isLike = !this.isLike
     },
     async getArticleDetail () {
       this.id = this.$route.params.id
+      // this.id = this.$route.query.id
       const {
         data: { data }
       } = await getArticleDetail(this.id)
-      console.log(data)
+      // console.log(data)
       this.countList = data
       this.commentNum = data.comm_count
       this.isCollect = data.is_collected
       this.isfollowed = data.is_followed
+      this.isLike = this.commentNum.attitude
     },
     // async getArtComment () {
     //   const id = this.$route.params.id
@@ -117,6 +122,9 @@ export default {
       this.show = false
       this.message = ''
       // return this.message
+    },
+    changeIsfollowed () {
+      this.isfollowed = !this.isfollowed
     }
   },
   components: {

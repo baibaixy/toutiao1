@@ -49,3 +49,28 @@ export const getUser = () =>
   request({
     url: '/v1_0/user/profile'
   })
+
+/**
+ *
+ * @param {string} usernsme
+ * @param {string} gender
+ * @param {string} birthday
+ * @returns
+ */
+export const editUser = (usernsme, gender, birthday) =>
+  request({
+    url: '/v1_0/user/profile',
+    method: 'PATCH',
+    data: {
+      name: usernsme,
+      gender,
+      birthday
+    }
+  })
+
+export const updatePortrait = (photo) =>
+  request({
+    url: '/v1_0/user/photo',
+    method: 'PATCH',
+    data: photo
+  })

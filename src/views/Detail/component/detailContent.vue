@@ -15,7 +15,7 @@
             size="small"
             icon="plus"
             :loading="loading"
-            v-if="!following"
+            v-if="!isfollowing"
             >关注</van-button
           >
           <van-button
@@ -56,7 +56,7 @@ export default {
     return {
       loading: false,
       comOrrep: '',
-      following: this.isfollowed
+      following: false
     }
   },
   mounted () {},
@@ -65,19 +65,24 @@ export default {
       const res = this.countList
       const time = dayjs(res.pubdate).fromNow()
       return time
+    },
+    isfollowing () {
+      return this.isfollowed
     }
   },
   methods: {
     async isFollow () {
       this.loading = true
+      // console.log(this.countList)
       try {
         if (this.following) {
           await delUserFollow(this.countList.aut_id)
         } else {
           const res = await setUserFollow(this.countList.aut_id)
+          // console.log(res)
           this.$toast.success(res.data.data.message)
         }
-        this.following = !this.following
+        this.$emit('changeIsfollowed')
       } catch (error) {
         if (error.response.status === 400) {
           this.$toast.fail('关注用户未成功')

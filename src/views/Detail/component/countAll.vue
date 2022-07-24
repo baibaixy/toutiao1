@@ -176,7 +176,7 @@ export default {
           const {
             data: { data }
           } = await getArtComment('a', this.id)
-          console.log(data)
+          // console.log(data)
           this.countResults = data
           this.countList = data.results
         } else {
@@ -214,7 +214,7 @@ export default {
             data: { data }
           } = await getArtComment('c', id)
           this.replyResults = data
-          console.log(data)
+          // console.log(data)
           this.replyList = data.results
         } else {
           const {
