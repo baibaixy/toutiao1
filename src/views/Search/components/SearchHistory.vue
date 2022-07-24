@@ -56,6 +56,7 @@ export default {
     },
     async CloseAllFn () {
       await removeHistoryTolocal()
+      this.historyArray = []
     },
     SearchFn (item) {
       this.$emit('OnSearchItem', item)

@@ -8,7 +8,12 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell v-for="item in result" :key="item.art_id" :value="item.title" />
+      <van-cell
+        v-for="item in result"
+        :key="item.art_id"
+        :value="item.title"
+        @click="SearchArt(item.art_id)"
+      />
     </van-list>
   </div>
 </template>
@@ -42,7 +47,7 @@ export default {
       try {
         const res = await getSearchResult(this.keywords)
         const arr = (await getHistoryBylocal()) || []
-        arr.push(this.keywords)
+        arr.unshift(this.keywords)
         const keywordsArray = Array.from(new Set(arr))
         await setHistoryTolocal(keywordsArray)
         // console.log(res)
@@ -78,6 +83,9 @@ export default {
         // 加载状态结束
         this.loading = false
       }
+    },
+    SearchArt (id) {
+      this.$router.push(`/detail/${id}`)
     }
   },
   created () {
